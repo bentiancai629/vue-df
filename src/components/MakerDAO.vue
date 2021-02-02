@@ -3,7 +3,6 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="Compund" name="first">
         <el-row>
-          <el-button>默认按钮</el-button>
           <el-button type="primary" @click="getTokenList">token列表</el-button>
           <el-button type="success" @click="getBalance">地址余额</el-button>
           <el-button type="info" @click="getMarketRate">市场利率</el-button>
@@ -85,9 +84,9 @@
         <el-divider></el-divider>
         <div>
           <span>账户信息结果</span></br>
-						<span>当前区块高度: {{}}</span></br>
-						<span>地址: {{}}</span></br>
-						<span>ETH余额: {{}}</span></br>
+						<span>当前区块高度: {{account.balanceNumber}}</span></br>
+						<span>地址: {{account.owner}}</span></br>
+						<span>ETH余额: {{account.ETH}}</span></br>
         </div>
              <el-divider></el-divider>
         <div>
