@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import MakerDAO from '@/components/MakerDAO'
+import Compound from '@/components/Compound'
+
 
 Vue.use(Router)
 
@@ -8,8 +10,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'MakerDAO',
+      component: MakerDAO
+    },
+    {
+      path: '/compound',
+      name: 'Compound',
+      component: Compound
     }
   ]
 })
