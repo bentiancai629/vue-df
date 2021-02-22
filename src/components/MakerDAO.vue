@@ -2,8 +2,108 @@
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <!-- Compound -->
-      <el-tab-pane label="Compund" name="first">
+     
+
+      <!------------------------ Makerdao ------------------------>
+      <el-tab-pane label="MakerDAO" name="first">
+        <el-row>
+          <el-button type="warning" @click="getAcountInfo">账户余额</el-button>
+          <el-divider></el-divider>
+					<el-button type="primary" @click="getSystemData">系统信息</el-button><br><br>
+          <el-divider></el-divider>
+          <el-input v-model="inputCdpType" placeholder="创建的CDP类型"></el-input><br><br>
+          <el-input v-model="inputEthAmount" placeholder="抵押的ETH数量"></el-input><br><br>
+          <el-input v-model="inputDaiAmount" placeholder="生成DAI数量 *必须大于1000*"></el-input><br><br>
+          <el-button type="success" @click="vault">抵押ETH借贷</el-button></br>
+           <el-divider></el-divider>
+          <!-- 借dai -->
+          <el-input v-model="drawDai" placeholder="生成dai数量"></el-input><br><br>
+          <el-button type="warning" @click="vault">生成dai</el-button></br>
+          <el-divider></el-divider>
+           <!-- 借dai -->
+          <el-input v-model="wipeDai" placeholder="偿还dai数量"></el-input><br>
+          <el-button type="info" @click="vault">偿还dai</el-button></br>
+          
+          <el-divider></el-divider>
+					<el-button type="info"    @click="closeVault">还DAI关闭CDP</el-button>
+          <el-divider></el-divider>
+					<el-button type="warning" @click="getSavingRate">存储利率市场</el-button>
+        </el-row>
+
+        <el-divider></el-divider>
+        <div>
+          <span>-- 账户信息结果 --</span></br></br>
+						<span>区块高度: {{accountInfo.blockNumber}}</span></br>
+						<span>地址: {{accountInfo.owner}}</span></br>
+						<span>ETH余额: {{accountInfo.ethBalance}} ETH</span></br>
+            <span>DAI余额: {{accountInfo.daiBalance}} DAI</span></br>
+            <span>BAT余额: {{accountInfo.batBalance}} BAT</span></br>
+            <span>CIP-ID: {{accountInfo.cdpId}}</span></br>
+						<span>CDP类型: ETH-A</span></br>
+            <span>抵押ETH: {{accountInfo.collateralAmount}} ETH</span></br>
+            <span>抵押资产: {{accountInfo.collateralValue}} USD</span></br>
+            <span>生成DAI: {{accountInfo.debtValue}} DAI</span></br>
+            <span>债务价值: {{accountInfo.collateralValue}} USD</span></br>
+            <span>清算价格: {{accountInfo.liquidationPrice}} USD/ETH</span></br>
+        </div>
+             <el-divider></el-divider>
+        
+        <div>
+          <span> -- 借dai -- </span></br></br>
+						<span>生成dai数量: {{}}</span></br>
+        </div>
+             <el-divider></el-divider>
+        
+        <div>
+          <span> -- 还dai -- </span></br></br>
+          
+            <span>当前债务数量: {{}}</span></br>
+        </div>
+             <el-divider></el-divider>
+
+        <div>
+          <span> -- 市场系统信息 -- </span></br></br>
+						<span>DAI的基准利率: {{mcdSystemData.base}}</span></br>
+						<span>系统借DAI上限: {{mcdSystemData.line}}</span></br>
+						<span>借贷系统是否关闭: {{mcdSystemData.dead}}</span></br>
+        </div>
+             <el-divider></el-divider>
+        <div>
+          <span>-- 创建债仓 --</span></br></br>
+						<span>CDP-ID: {{createVault.cdpId}}</span></br>
+						<span>CDP-类型: {{createVault.cdpType}}</span></br>
+						<span>抵押ETH数量: {{createVault.supplyETH}}</span></br>
+            <span>生成DAI数量: {{createVault.borrowDAI}}</span></br>
+        </div>
+             <el-divider></el-divider>
+        <div>
+          <span>-- 关闭债仓 -- </span></br></br>
+						<span>交易Hash: {{closeVault.txHash}}</span></br>
+        </div>
+             <el-divider></el-divider>
+        <div>
+          <span>-- 利率市场 -- </span></br></br>
+						<span>地址: {{mcdSaving.address}}</span></br>
+						<span>存入DAI数量: {{mcdSaving.balanceOfAddress}}</span></br>
+						<span>DSR中Dai总锁定: {{mcdSaving.totalDaiLocked}}</span></br>
+            	<span>DAI的年化收益: {{mcdSaving.apyOfDAI}}</span></br>
+        </div>
+
+         <el-divider></el-divider>
+        </br>
+        <!-- response -->
+        <span>------------------- Response ------------------- </span></br></br>
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 6, maxRows: 8 }"
+          placeholder="调用结果: "
+          v-model="textarea2"
+        >
+        </el-input>
+      </el-tab-pane>
+
+       <!-- Compound -->
+      <el-tab-pane label="Compund" name="second">
         <el-row>
           <el-button type="primary" @click="getTokenList">token列表</el-button>
           <el-button type="success" @click="getAddressBalance">地址余额</el-button>
@@ -85,68 +185,6 @@
           :autosize="{ minRows: 6, maxRows: 8 }"
           placeholder="调用结果"
           v-model="textarea1"
-        >
-        </el-input>
-      </el-tab-pane>
-
-      <!------------------------ Makerdao ------------------------>
-      <el-tab-pane label="MakerDAO" name="second">
-        <el-row>
-          <el-button type="warning" @click="getAcountInfo">账户余额</el-button>
-					<el-button type="primary" @click="getSystemData">系统信息</el-button><br><br>
-          <el-divider></el-divider>
-          <el-input v-model="inputCdpType" placeholder="创建的CDP类型"></el-input><br><br>
-          <el-input v-model="inputEthAmount" placeholder="抵押的ETH数量"></el-input><br><br>
-          <el-input v-model="inputDaiAmount" placeholder="生成DAI数量 *必须大于1000*"></el-input><br><br>
-          <el-button type="success" @click="vault">抵押ETH借贷</el-button></br>
-          <el-divider></el-divider>
-					<el-button type="info"    @click="closeVault">还DAI关闭CDP</el-button>
-					<el-button type="warning" @click="getSavingRate">存储利率市场</el-button>
-        </el-row>
-
-        <el-divider></el-divider>
-        <div>
-          <span>-- 账户信息结果 --</span></br></br>
-						<span>当前区块高度: {{accountInfo.blockNumber}}</span></br>
-						<span>地址: {{accountInfo.owner}}</span></br>
-						<span>ETH余额: {{accountInfo.ETH}}</span></br>
-        </div>
-             <el-divider></el-divider>
-        <div>
-          <span>-- 市场系统信息 -- </span></br></br>
-						<span>DAI的基准利率: {{mcdSystemData.base}}</span></br>
-						<span>系统借DAI上限: {{mcdSystemData.line}}</span></br>
-						<span>借贷系统是否关闭: {{mcdSystemData.dead}}</span></br>
-        </div>
-             <el-divider></el-divider>
-        <div>
-          <span>-- 创建债仓 --</span></br></br>
-						<span>CDP-ID: {{createVault.cdpId}}</span></br>
-						<span>CDP-类型: {{createVault.cdpType}}</span></br>
-						<span>抵押ETH数量: {{createVault.supplyETH}}</span></br>
-            <span>生成DAI数量: {{createVault.borrowDAI}}</span></br>
-        </div>
-             <el-divider></el-divider>
-        <div>
-          <span>-- 关闭债仓 -- </span></br></br>
-						<span>交易Hash: {{closeVault.txHash}}</span></br>
-        </div>
-             <el-divider></el-divider>
-        <div>
-          <span>-- 利率市场 -- </span></br></br>
-						<span>地址: {{mcdSaving.address}}</span></br>
-						<span>存入DAI数量: {{mcdSaving.balanceOfAddress}}</span></br>
-						<span>DSR中Dai总锁定: {{mcdSaving.totalDaiLocked}}</span></br>
-            	<span>DAI的年化收益: {{mcdSaving.apyOfDAI}}</span></br>
-        </div>
-         <el-divider></el-divider>
-        </br>
-        <span>------------------- Response ------------------- </span></br></br>
-        <el-input
-          type="textarea"
-          :autosize="{ minRows: 6, maxRows: 8 }"
-          placeholder="调用结果: "
-          v-model="textarea2"
         >
         </el-input>
       </el-tab-pane>
