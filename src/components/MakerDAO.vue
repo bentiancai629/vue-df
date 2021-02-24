@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
       <!------------------------ Makerdao ------------------------>
-      <el-tab-pane label="MakerDAO" name="first">
+      <el-tab-pane label="MakerDAO" name="second">
         <el-row>
           <el-button type="warning" @click="getAcountInfo">账户余额</el-button>
           <el-divider></el-divider>
@@ -13,36 +13,36 @@
           <el-divider></el-divider>
 
           <!-- 创建CDP -->
-          <el-input v-model="inputCdpType" placeholder="创建的CDP类型"></el-input><br>
-          <el-input v-model="inputEthAmount" placeholder="抵押的eth数量"></el-input><br>
-          <el-input v-model="inputDaiAmount" placeholder="生成dai数量 *必须大于1000*"></el-input><br><br>
+          <el-input v-model="inputCdpType" placeholder="创建的CDP类型"></el-input>
+          <el-input v-model="inputEthAmount" placeholder="抵押的eth数量"></el-input>
+          <el-input v-model="inputDaiAmount" placeholder="生成dai数量 *必须大于1000*"></el-input>
           <el-button type="success" @click="openLockAndDraw">创建CDP</el-button></br>
           <el-divider></el-divider>
 
           <!-- 抵押eth借dai -->
-          <el-input v-model="ldLockEthNum" placeholder="抵押的eth数量"></el-input><br>
-          <el-input v-model="ldDrawDaiNum" placeholder="生成dai数量"></el-input><br><br>
+          <el-input v-model="ldLockEthNum" placeholder="抵押的eth数量"></el-input>
+          <el-input v-model="ldDrawDaiNum" placeholder="生成dai数量"></el-input>
           <el-button type="warning" @click="getLockAndDraw">抵押eth借dai</el-button></br>
           <el-divider></el-divider>
 
           <!-- 抵押eth -->
-          <el-input v-model="lcLockEthNum" placeholder="抵押的eth数量"></el-input><br>
+          <el-input v-model="lcLockEthNum" placeholder="抵押的eth数量"></el-input>
           <el-button type="success" @click="getLockCollateral">抵押eth</el-button></br>
           <el-divider></el-divider>
 
           <!-- 借dai -->
-          <el-input v-model="ddDrawDaiNum" placeholder="生成dai数量"></el-input><br><br>
+          <el-input v-model="ddDrawDaiNum" placeholder="生成dai数量"></el-input>
           <el-button type="primary" @click="getDrawDai">生成dai</el-button></br>
           <el-divider></el-divider>
 
           <!-- 还dai -->
-          <el-input v-model="wdWipeDaiNum" placeholder="偿还dai数量"></el-input><br><br>
+          <el-input v-model="wdWipeDaiNum" placeholder="偿还dai数量"></el-input>
           <el-button type="info" @click="getWipeDai">偿还dai</el-button></br>
           <el-divider></el-divider>
 
           <!-- 偿还dai取回ETH -->
-          <el-input v-model="wfWipeDaiNum" placeholder="偿还dai数量"></el-input><br><br>
-          <el-input v-model="wfFreeEthNum" placeholder="取回eth数量"></el-input><br><br>
+          <el-input v-model="wfWipeDaiNum" placeholder="偿还dai数量"></el-input>
+          <el-input v-model="wfFreeEthNum" placeholder="取回eth数量"></el-input>
 					<el-button type="success" @click="getWipeAndFree">还dai取回eth</el-button>
           <el-divider></el-divider>
 
@@ -154,7 +154,7 @@
       </el-tab-pane>
 
        <!-- Compound -->
-      <el-tab-pane label="Compund" name="second">
+      <el-tab-pane label="Compund" name="first">
         <el-row>
           <el-button type="primary" @click="getTokenList">token列表</el-button>
           <el-divider></el-divider>
@@ -162,21 +162,31 @@
           <el-divider></el-divider>
           <el-button type="info" @click="getMarketRate">市场利率</el-button>
           <el-divider></el-divider>
-          <el-input v-model="erc20Token" placeholder="币名: ETH"></el-input> <br>
-          <el-input v-model="ethAmount" placeholder="抵押eth数量: 1"></el-input></br><br>
-          <el-button type="warning" @click="supplyETH">生成cETH</el-button><br>
+          <div>
+
+
+          <el-input v-model="erc20Token" placeholder="币名: ETH" ></el-input>
+          <el-input v-model="ethAmount" placeholder="抵押eth数量: 1"></el-input>
+          <el-button type="warning" @click="supplyETH">生成cETH</el-button>
+                    </div>
+
           <el-divider></el-divider>
-          <el-button type="warning" @click="redeemCEth">赎回所有ETH</el-button><br>
+          <el-input v-model="borrowDaiNum" placeholder="借dai数量: 100"></el-input>
+          <el-button type="warning" @click="borrowDai">借dai</el-button><br>
+          <el-divider></el-divider>
+          <el-input v-model="repayDaiNum" placeholder="偿还dai数量: 100"></el-input>
+          <el-button type="warning" @click="repayDai">还dai</el-button><br>
+          <el-divider></el-divider>
+          <el-input v-model="repayETHAmount" placeholder="赎回eth数量: 1"></el-input>
+          <el-button type="warning" @click="redeemCETH">赎回eth</el-button><br>
           <el-divider></el-divider>
           <el-button type="danger" @click="supplyBorrowRate">借贷利率</el-button>
           <el-divider></el-divider>
-          <br>
-          <el-input v-model="borrowDaiAmount" placeholder="生成cDai数量: 100"></el-input></br>
+          <el-input v-model="supplyDaiNum" placeholder="生成cDai数量: 100"></el-input>
           <el-button type="primary" @click="supplyDai">生成cDai</el-button>
           <el-divider></el-divider>
-          <br>
-          <el-input v-model="repayDaiAmount" placeholder="赎回dai数量: 100"></el-input></br>
-          <el-button type="primary" @click="redeemCDai">赎回所有dai</el-button>
+          <el-input v-model="redeemCDaiNum" placeholder="赎回dai数量: 100"></el-input>
+          <el-button type="primary" @click="redeemCDai">赎回dai</el-button>
         </el-row>
         <div></div>
         <el-divider></el-divider>
@@ -188,9 +198,10 @@
          <el-divider></el-divider>
         <div>
           <span>-- 账户余额 --</span></br></br>
-						<span>DAI余额: {{getBalance.DAI}}</span></br>
-						<span>cETH余额: {{getBalance.cETH}}</span></br>
-						<span>ETH余额: {{getBalance.ethBalance}}</span></br>
+						<span>ETH余额: {{getBalance.ETH}}</span></br>
+            	<span>cETH余额: {{getBalance.cETH}}</span></br>
+              <span>DAI余额: {{getBalance.DAI}}</span></br>
+              <span>cDAI余额: {{getBalance.cDAI}}</span></br>
         </div>
          <el-divider></el-divider>
         <div>
@@ -198,11 +209,6 @@
 						<span>ETH存储利率: {{getApyByToken.supplyApyETH}}</span></br>
 						<span>ETH借贷利率: {{getApyByToken.borrowApyETH}}</span></br>
         </div>
-         <!-- <el-divider></el-divider>
-         <div>
-          <span>-- 生成cETH --</span></br></br>
-						<span>授权: </span></br>
-        </div> -->
          <el-divider></el-divider>
         <div>
           <span>-- 币种的借贷利率 --</span></br></br>
@@ -217,16 +223,16 @@
          <el-divider></el-divider>
         <div>
           <span>-- 借dai --</span></br></br>
-						<span>交易Hash: {{borrowExecute.txHash}}</span></br>
-            <span>币种: {{borrowExecute.assetName}}</span></br>
-            <span>数量: {{borrowExecute.borrowBalance}}</span></br>
+						<span>交易Hash: {{borrowDaiResult.txHash}}</span></br>
+            <span>币种: {{borrowDaiResult.assetName}}</span></br>
+            <span>数量: {{borrowDaiResult.borrowBalance}}</span></br>
         </div>
          <el-divider></el-divider>
         <div>
           <span>-- 还dai -- </span></br></br>
-					<span>交易Hash: {{repayingBorrow.txHash}}</span></br>
-            <span>币种: {{repayingBorrow.assetName}}</span></br>
-            <span>数量: {{repayingBorrow.repayAmount}}</span></br>
+					<span>交易Hash: {{repayDaiResult.txHash}}</span></br>
+            <span>币种: {{repayDaiResult.assetName}}</span></br>
+            <span>数量: {{repayDaiResult.repayAmount}}</span></br>
         </div>
          <!-- <el-divider></el-divider>
         <div>
@@ -290,12 +296,17 @@ export default {
       borrowERC20ByETH: {},
       erc20Token: "",
       ethAmount: "",
+      repayETHAmount: "",
       borrowRate: {},
       borrowExecute: {},
-      borrowDaiAmount: "",
-      repayDaiAmount: "",
       repayingBorrow: {},
       borrowETHWithERC20: {},
+      supplyDaiNum: "",
+      redeemCDaiNum: "",
+      borrowDaiNum: "",
+      borrowDaiResult: {},
+      repayDaiNum: "",
+      repayDaiResult: {},
     };
   },
 
@@ -425,7 +436,7 @@ export default {
         .get("http://127.0.0.1:7001/api/makerdao/wipeAndFree", {
           params: {
             wfWipeDaiNum: _this.wfWipeDaiNum,
-            wfFreeEthNum: _this.freeEthNum,
+            wfFreeEthNum: _this.wfFreeEthNum,
           },
         })
         .then(function (response) {
@@ -482,7 +493,7 @@ export default {
         .get("http://127.0.0.1:7001/api/compound/getBalance")
         .then(function (response) {
           if (response.data.status === 200) {
-            // _this.textarea1 = JSON.stringify(response.data.data);
+            _this.textarea1 = JSON.stringify(response.data.data);
             _this.getBalance = response.data.data;
           }
         });
@@ -514,11 +525,11 @@ export default {
         });
     },
 
-    redeemCEth() {
+    redeemCETH() {
       var _this = this;
       _this.textarea1 = "";
       this.$http
-        .get("http://127.0.0.1:7001/api/compound/redeemCEth", {
+        .get("http://127.0.0.1:7001/api/compound/redeemCETH", {
           params: {
             tokenName: _this.erc20Token,
             ethAmount: _this.ethAmount,
@@ -545,29 +556,59 @@ export default {
       var _this = this;
       _this.textarea1 = "";
       this.$http
-        .get("http://127.0.0.1:7001/api/compound/borrowExecute", {
+        .get("http://127.0.0.1:7001/api/compound/borrowDai", {
           params: {
-            borrowDaiAmount: _this.borrowDaiAmount,
+            borrowDaiNum: _this.borrowDaiNum,
           },
         })
         .then(function (response) {
           _this.textarea1 = JSON.stringify(response.data.data);
-          _this.borrowExecute = response.data.data;
+          _this.borrowDaiResult = response.data.data;
         });
     },
 
-    repayBorrow() {
+    repayDai() {
       var _this = this;
       _this.textarea1 = "";
       this.$http
-        .get("http://127.0.0.1:7001/api/compound/repayingBorrow", {
+        .get("http://127.0.0.1:7001/api/compound/repayDai", {
           params: {
-            repayDaiAmount: _this.repayDaiAmount,
+            repayDaiNum: _this.repayDaiNum,
           },
         })
         .then(function (response) {
           _this.textarea1 = JSON.stringify(response.data.data);
-          _this.borrowExecute = response.data.data;
+          _this.repayDaiResult = response.data.data;
+        });
+    },
+
+    supplyDai() {
+      var _this = this;
+      _this.textarea1 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/compound/supplyDai", {
+          params: {
+            supplyDaiNum: _this.supplyDaiNum,
+          },
+        })
+        .then(function (response) {
+          _this.textarea1 = JSON.stringify(response.data.data);
+          _this.borrowERC20ByETH = response.data.data;
+        });
+    },
+
+    redeemCDai() {
+      var _this = this;
+      _this.textarea1 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/compound/redeemCDai", {
+          params: {
+            redeemCDaiNum: _this.redeemCDaiNum,
+          },
+        })
+        .then(function (response) {
+          _this.textarea1 = JSON.stringify(response.data.data);
+          _this.borrowERC20ByETH = response.data.data;
         });
     },
   },
@@ -582,5 +623,8 @@ h2 {
 }
 a {
   color: #42b983;
+}
+.el-input {
+  width: 200px;
 }
 </style>
