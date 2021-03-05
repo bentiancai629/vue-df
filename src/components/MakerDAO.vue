@@ -153,7 +153,7 @@
         </el-input>
       </el-tab-pane>
 
-       <!-- Compound -->
+      <!-- Compound -->
       <el-tab-pane label="Compund" name="first">
         <el-row>
           <el-button type="primary" @click="getTokenList">token列表</el-button>
@@ -252,6 +252,96 @@
         >
         </el-input>
       </el-tab-pane>
+
+      <!------------------------ Aave ------------------------>
+      <el-tab-pane label="AAVE" name="third">
+        <el-row>
+          <el-button type="primary" @click="getAcountInfo">账户余额</el-button>
+          <el-divider></el-divider>
+
+          <!-- 系统信息 -->
+					<el-button type="info" @click="getSystemData">系统信息</el-button><br>
+          <el-divider></el-divider>
+
+          <!-- 创建CDP -->
+          <el-input v-model="depositToken" placeholder="币种: DAI"></el-input>
+          <el-input v-model="depositAmount" placeholder="数量: 100"></el-input>
+          <el-button type="danger" @click="getDeposit">deposit</el-button></br>
+          <el-divider></el-divider>
+
+          <!-- 抵押eth借dai -->
+          <el-input v-model="withdrawToken" placeholder="币种: DAI"></el-input>
+          <el-input v-model="withdrawAmount" placeholder="数量: 100"></el-input>
+          <el-button type="warning" @click="getWithdraw">withdraw</el-button></br>
+          <el-divider></el-divider>
+
+          <!-- 抵押eth -->
+          <el-input v-model="borrowToken" placeholder="币种: DAI"></el-input>
+           <el-input v-model="borrowAmount" placeholder="数量: 100"></el-input>
+          <el-button type="success" @click="getBorrow">borrow</el-button></br>
+          <el-divider></el-divider>
+
+          <!-- 借dai -->
+          <el-input v-model="repayToken" placeholder="币种: DAI"></el-input>
+          <el-input v-model="repayAmount" placeholder="数量: 100"></el-input>
+          <el-button type="primary" @click="getRepay">repay</el-button></br>
+          <el-divider></el-divider>
+        </el-row>
+
+        <el-divider></el-divider>
+        <div>
+          <span>-- 账户信息结果 --</span></br></br>
+						<span>区块高度: {{accountInfo.blockNumber}}</span></br>
+						<span>地址: {{accountInfo.owner}}</span></br>
+						<span>eth余额: {{accountInfo.ethBalance}} ETH</span></br>
+            <span>dai余额: {{accountInfo.daiBalance}} DAI</span></br>
+            <span>抵押eth: {{accountInfo.collateralAmount}} ETH</span></br>
+            <span>抵押资产: {{accountInfo.collateralValue}} USD</span></br>
+            <span>生成dai: {{accountInfo.debtValue}} DAI</span></br>
+        </div>
+            <el-divider></el-divider>
+
+        <div>
+          <span> -- 市场系统信息 -- </span></br></br>
+						<span>dai的基准利率: {{mcdSystemData.base}}</span></br>
+        </div>
+             <el-divider></el-divider>
+
+        <div>
+          <span> -- 充币 --</span></br></br>
+					<span>交易哈希: {{getDepositResult.txHash}}</span></br>
+        </div>
+             <el-divider></el-divider>
+
+        <div>
+          <span> -- 提币 -- </span></br></br>
+					<span>交易哈希: {{getWithdrawResult.txHash}}</span></br>
+          </div>
+          <el-divider></el-divider>
+
+         <div>
+          <span> -- 借币 -- </span></br></br>
+					<span>交易哈希: {{getBorrowResult.txHash}}</span></br>
+        </div>
+          <el-divider></el-divider>
+
+        <div>
+          <span> -- 偿还 -- </span></br></br>
+					<span>交易哈希: {{getRepayResult.txHash}}</span></br>
+        </div>
+             <el-divider></el-divider>
+        </br>
+
+        <!-- response -->
+        <span>------------------- Response ------------------- </span></br></br>
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 6, maxRows: 8 }"
+          placeholder="调用结果: "
+          v-model="textarea2"
+        >
+        </el-input>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -307,6 +397,20 @@ export default {
       borrowDaiResult: {},
       repayDaiNum: "",
       repayDaiResult: {},
+
+      // aave
+      depositToken: "",
+      depositAmount: "",
+      getDepositResult: {},
+      withdrawToken: "",
+      withdrawAmount: "",
+      getWithdrawResult: {},
+      borrowToken: "",
+      borrowAmount: "",
+      getBorrowResult: {},
+      repayToken: "",
+      repayAmount: "",
+      getRepayResult: {},
     };
   },
 
@@ -609,6 +713,81 @@ export default {
         .then(function (response) {
           _this.textarea1 = JSON.stringify(response.data.data);
           _this.borrowERC20ByETH = response.data.data;
+        });
+    },
+
+    // AAVE
+    getDeposit() {
+      var _this = this;
+      _this.textarea2 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/aave/deposit", {
+          params: {
+            depositToken: _this.depositToken,
+            depositAmount: _this.depositAmount,
+          },
+        })
+        .then(function (response) {
+          if (response.data.status === 200) {
+            _this.textarea2 = JSON.stringify(response.data.data);
+            _this.getDepositResult = response.data.data;
+          }
+        });
+    },
+
+    // AAVE
+    getWithdraw() {
+      var _this = this;
+      _this.textarea2 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/aave/withdraw", {
+          params: {
+            withdrawToken: _this.withdrawToken,
+            withdrawAmount: _this.withdrawAmount,
+          },
+        })
+        .then(function (response) {
+          if (response.data.status === 200) {
+            _this.textarea2 = JSON.stringify(response.data.data);
+            _this.getWithdrawResult = response.data.data;
+          }
+        });
+    },
+
+    // AAVE
+    getBorrow() {
+      var _this = this;
+      _this.textarea2 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/aave/borrow", {
+          params: {
+            borrowToken: _this.borrowToken,
+            borrowAmount: _this.borrowAmount,
+          },
+        })
+        .then(function (response) {
+          if (response.data.status === 200) {
+            _this.textarea2 = JSON.stringify(response.data.data);
+            _this.getBorrowResult = response.data.data;
+          }
+        });
+    },
+
+    getRepay() {
+      var _this = this;
+      _this.textarea2 = "";
+      this.$http
+        .get("http://127.0.0.1:7001/api/aave/repay", {
+          params: {
+            repayToken: _this.repayToken,
+            repayAmount: _this.repayAmount,
+          },
+        })
+        .then(function (response) {
+          if (response.data.status === 200) {
+            _this.textarea2 = JSON.stringify(response.data.data);
+            _this.getRepayResult = response.data.data;
+          }
         });
     },
   },
